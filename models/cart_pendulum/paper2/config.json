@@ -1,0 +1,32 @@
+{
+  "training_steps": 1e6,
+  "nminibatches": 1,
+  "gamma": 0.99,
+  "n_steps": 256,
+  "noptepochs": 10,
+  "learning_rate": 0.0003,
+  "lam": 0.9,
+  "cliprange": 0.2,
+  "cliprange_vf": -1,
+  "full_tensorboard_log": true,
+  "policy": "AHETMPCLQRPolicy",
+  "target_kl": null,
+  "ent_coef": 0.0,
+  "vf_coef": 0.5,
+  "time_aware": false,
+  "max_grad_norm": 0.5,
+  "env_d": [1, 2, 3, 4],
+  "normalize_obs": true,
+  "checkpoint_interval": 5000,
+  "test_interval": 15000,
+  "policy_kwargs": {
+    "layers": {
+      "pi": [64, 64],
+      "vf": [128, 128]
+    },
+    "max_horizon": 40,
+    "init_bias": 2,
+    "init_bias_vf": 0,
+    "init_bias_horizon": 0.602
+  }
+}

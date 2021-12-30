@@ -1,0 +1,25 @@
+{
+  "nminibatches": 1,
+  "gamma": 0.99,
+  "n_steps": 256,
+  "noptepochs": 10,
+  "learning_rate": 1e-3,
+  "lam": 0.9,
+  "cliprange": 0.2,
+  "cliprange_vf": -1,
+  "full_tensorboard_log": false,
+  "policy": "LQRPolicy",
+  "target_kl": null,
+  "ent_coef": 0.0,
+  "vf_coef": 0.5,
+  "time_aware": false,
+  "normalize_obs": true,
+  "max_grad_norm": 0.5,
+  "env_d": 1,
+  "policy_kwargs": {
+    "layers": {
+      "pi": [64, 64],
+      "vf": [128, 128]
+    }
+  }
+}

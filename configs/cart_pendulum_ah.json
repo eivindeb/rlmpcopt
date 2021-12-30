@@ -1,0 +1,429 @@
+{
+  "environment": {
+    "max_steps": 150,
+    "end_on_constraint_violation": ["pos"],
+    "observation": {
+      "variables": [
+        {
+            "name": "theta",
+            "type": "mpc_state",
+            "value_type": "mpc_computation"
+          },
+          {
+            "name": "omega",
+            "type": "mpc_state",
+            "value_type": "mpc_computation"
+          },
+          {
+            "name": "pos",
+            "type": "mpc_state",
+            "value_type": "mpc_computation"
+          },
+          {
+            "name": "v",
+            "type": "mpc_state",
+            "value_type": "mpc_computation"
+          },
+          {
+            "name": "mpc_horizon",
+            "type": "action",
+            "value_type": "mpc_computation"
+          },
+          {
+            "name": "theta",
+            "type": "epsilon"
+          },
+          {
+            "name": "omega",
+            "type": "epsilon"
+          },
+          {
+            "name": "pos",
+            "type": "epsilon"
+          },
+          {
+            "name": "v",
+            "type": "epsilon"
+          },
+          {
+            "name": "theta",
+            "type": "state"
+          },
+          {
+            "name": "omega",
+            "type": "state"
+          },
+          {
+            "name": "pos",
+            "type": "state"
+          },
+          {
+            "name": "v",
+            "type": "state"
+          },
+          {
+            "name": "pos",
+            "type": "error"
+          },
+          {
+            "name": "clin-pos-u",
+            "type": "constraint",
+            "value_type": "distance"
+          },
+          {
+            "name": "clin-pos-l",
+            "type": "constraint",
+            "value_type": "distance"
+          },
+          {
+            "name": "energy_kinetic",
+            "type": "aux"
+          },
+          {
+            "name": "energy_potential",
+            "type": "aux"
+          }
+        ]
+    },
+    "action": {
+      "variables": [
+        {
+          "name": "mpc_horizon"
+        }
+      ]
+    },
+    "reward": {
+      "termination_weight": -10,
+      "normalize": {
+        "mean": 0.0,
+        "std": 341.62
+      },
+      "variables": [
+        {
+          "type": "action",
+          "name": "mpc_horizon",
+          "value_type": "controller"
+        },
+        {
+          "name": "energy_kinetic",
+          "type": "aux"
+        },
+        {
+          "name": "energy_potential",
+          "type": "aux"
+        },
+        {
+          "name": "pos",
+          "type": "state"
+        },
+        {
+          "name": "theta",
+          "type": "state"
+        },
+        {
+          "name": "pos_r",
+          "type": "tvp"
+        },
+        {
+          "name": "omega",
+          "type": "state"
+        }
+      ],
+      "expression": "-(energy_kinetic - 10 * energy_potential + 10 * (pos - pos_r) ** 2) - 0.01 * (mpc_horizon)"
+    },
+    "randomize": {
+      "reference": {
+      },
+      "state": {
+       "theta": {
+          "type": "uniform",
+          "kw": {
+            "low": 0,
+            "high": 6.26
+          }
+        },
+        "omega": {
+          "type": "uniform",
+          "kw": {
+            "low": -1,
+            "high": 1
+          }
+        },
+        "v": {
+          "type": "uniform",
+          "kw": {
+            "low": -1,
+            "high": 1
+          }
+        }
+      },
+      "model": {}
+    },
+    "render": {
+      "plot_action": true,
+      "plot_reward": true
+    },
+    "info": {
+      "reward": {
+        "base": "energy_kinetic - 10 * energy_potential + 10 * (pos - pos_r) ** 2",
+        "computation": "0.01 * (mpc_horizon)"
+      }
+    }
+  },
+  "plant": {
+    "render": {
+      "process_noise": true,
+      "tvp": false
+    },
+    "params": {
+      "t_step": 0.04
+    },
+    "model": {
+      "type": "continuous",
+      "class": "nonlinear",
+      "states": {
+        "pos": {
+          "rhs": "v"
+        },
+        "v": {
+          "rhs": "(m * g * casadi.sin(theta) * casadi.cos(theta) - (1+k) * (u1 + m * l * (omega) ** 2 * casadi.sin(theta) - mu_c * v) - (mu_p * omega * casadi.cos(theta)) / l) / (m * (casadi.cos(theta)) ** 2 - (1 + k) * M)"
+        },
+        "theta": {
+          "rhs": "omega"
+        },
+        "omega": {
+          "rhs": "1 / (k+1) * 1 / l * (g * casadi.sin(theta) - ((m * g * casadi.sin(theta) * casadi.cos(theta) - (1+k) * (u1 + m * l * (omega) ** 2 * casadi.sin(theta) - mu_c * v) - (mu_p * omega * casadi.cos(theta)) / l) / (m * (casadi.cos(theta)) ** 2 - (1 + k) * M)) * casadi.cos(theta) - (mu_p * omega) / (m * l))"
+        }
+      },
+      "inputs": {
+        "u1": {
+          "unit": "rad/s"
+        }
+      },
+      "auxs": {
+        "energy_kinetic": {
+          "variables": [
+            {
+              "name": "v",
+              "type": "_x"
+            },
+            {
+              "name": "theta",
+              "type": "_x"
+            },
+            {
+              "name": "omega",
+              "type": "_x"
+            }
+          ],
+          "expression": "0.5 * M * v ** 2 + 0.5 * m * (2 * l) * (omega) ** 2 - m * (2 * l) * v * omega * casadi.cos(theta)"
+        },
+        "energy_potential": {
+          "variables": [
+            {
+              "name": "theta",
+              "type": "_x"
+            }
+          ],
+          "expression": "m * g * (2 * l) * casadi.cos(theta)"
+        }
+      },
+      "parameters": {
+        "m": 0.1,
+        "M": 1.1,
+        "l": 0.25,
+        "g": 9.81,
+        "k": 1.33,
+        "mu_c": 0.01,
+        "mu_p": 0.001
+      }
+    }
+  },
+  "mpc": {
+    "type": "AHMPC",
+    "mode": "weights",
+    "params": {
+      "n_horizon": 40,
+      "t_step": 0.04,
+      "n_robust": 0,
+      "store_full_solution": true
+    },
+    "model": {
+      "type": "continuous",
+      "class": "nonlinear",
+      "states": {
+        "pos": {
+          "rhs": "v"
+        },
+        "v": {
+          "rhs": "(m * g * casadi.sin(theta) * casadi.cos(theta) - (1+k) * (u1 + m * l * (omega) ** 2 * casadi.sin(theta) - mu_c * v) - (mu_p * omega * casadi.cos(theta)) / l) / (m * (casadi.cos(theta)) ** 2 - (1 + k) * M)"
+        },
+        "theta": {
+          "rhs": "omega"
+        },
+        "omega": {
+          "rhs": "1 / (k+1) * 1 / l * (g * casadi.sin(theta) - ((m * g * casadi.sin(theta) * casadi.cos(theta) - (1+k) * (u1 + m * l * (omega) ** 2 * casadi.sin(theta) - mu_c * v) - (mu_p * omega * casadi.cos(theta)) / l) / (m * (casadi.cos(theta)) ** 2 - (1 + k) * M)) * casadi.cos(theta) - (mu_p * omega) / (m * l))"
+        }
+      },
+      "inputs": {
+        "u1": {
+          "unit": "rad/s",
+          "noise": {
+            "type": "normal",
+            "kw": {
+              "loc": 0,
+              "scale": 0.0
+            }
+          }
+        }
+      },
+      "tvps": {
+        "pos_r": {
+          "true": [{
+            "type": "uniform",
+            "redraw_every": 50,
+            "draw_max": 150,
+            "kw": {
+              "high": 1,
+              "low": -1
+            }
+          }]
+        }
+      },
+      "ps": {
+        "pos_r": {}
+      },
+      "auxs": {
+        "energy_kinetic": {
+          "variables": [
+            {
+              "name": "v",
+              "type": "_x"
+            },
+            {
+              "name": "theta",
+              "type": "_x"
+            },
+            {
+              "name": "omega",
+              "type": "_x"
+            }
+          ],
+          "expression": "0.5 * M * v ** 2 + 0.5 * m * (2 * l) * (omega) ** 2 - m * (2 * l) * v * omega * casadi.cos(theta)"
+        },
+        "energy_potential": {
+          "variables": [
+            {
+              "name": "theta",
+              "type": "_x"
+            }
+          ],
+          "expression": "m * g * (2 * l) * (casadi.cos(theta) - 1)"
+        }
+      },
+      "parameters": {
+        "m": 0.2,
+        "M": 1.5,
+        "l": 0.25,
+        "g": 9.81,
+        "k": 1.33,
+        "mu_c": 0.01,
+        "mu_p": 0.001
+      }
+    },
+    "reference": {
+      "pos_r": {}
+    },
+    "constraints": [
+      {
+        "name": "u1",
+        "type": "_u",
+        "constraint_type": "lower",
+        "value": -5
+      },
+      {
+        "name": "u1",
+        "type": "_u",
+        "constraint_type": "upper",
+        "value": 5
+      },
+      {
+        "name": "pos",
+        "type": "_x",
+        "constraint_type": "lower",
+        "value": -2
+      },
+      {
+        "name": "pos",
+        "type": "_x",
+        "constraint_type": "upper",
+        "value": 2
+      },
+      {
+        "name": "pos",
+        "type": "_x",
+        "constraint_type": "lower",
+        "value": -1.5,
+        "soft": true,
+        "cost": 1000
+      },
+      {
+        "name": "pos",
+        "type": "_x",
+        "constraint_type": "upper",
+        "value": 1.5,
+        "soft": true,
+        "cost": 1000
+      }
+    ],
+    "objective": {
+      "discount_factor": 1,
+      "lterm": {
+        "variables": [
+          {
+            "name": "energy_kinetic",
+            "type": "_aux"
+          },
+          {
+            "name": "energy_potential",
+            "type": "_aux"
+          },
+          {
+            "name": "pos",
+            "type": "_x"
+          },
+          {
+            "name": "pos_r",
+            "type": "_tvp"
+          }
+        ],
+        "expression": "energy_kinetic - 10 * energy_potential + 10 * (pos - pos_r) ** 2"
+      },
+      "mterm": {
+        "variables": [
+          {
+            "name": "energy_kinetic",
+            "type": "_aux"
+          },
+          {
+            "name": "energy_potential",
+            "type": "_aux"
+          },
+          {
+            "name": "pos",
+            "type": "_x"
+          },
+          {
+            "name": "pos_r",
+            "type": "_p"
+          }
+        ],
+        "expression": "energy_kinetic - 10 * energy_potential + 10 * (pos - pos_r) ** 2"
+      },
+      "vf": null,
+      "R_delta": {
+        "u1": 0.1
+      }
+    }
+  }
+}
