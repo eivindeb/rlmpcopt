@@ -11,6 +11,7 @@ The code is based on the libraries [stable-baselines](https://stable-baselines.r
 for explanations of their configurable parameters.
 
 ## Installation
+Tested with Python 3.7 (<=3.7 is required for Tensorflow 1)
 ```shell
 git clone https://github.com/eivindeb/rlmpcopt
 cd rlmpcopt
@@ -18,7 +19,7 @@ pip install -r requirements.txt
 ```
 
 ## Training
-Reinforcement learning models to tune the MPC can be trained as follows, e.g. for the "complete" policy with 4 parallell actors for lower wall-clock training time:
+Reinforcement learning models to tune the MPC can be trained as follows, e.g. for the "complete" policy with 4 parallel actors for lower wall-clock training time:
 ```shell
 python train_model.py --rl_config_name rl_config --env_config_name cart_pendulum --model_name test --seed 0 --tb_port 6010 --n_env 4 --test_set_name validation-set-25
 ```
@@ -40,7 +41,7 @@ python evaluate.py --model_path models/cart_pendulum/paper1/best/model.zip --see
 ```
 
 ### Fixed MPC Baseline
-To evaluate the fixed MPC baseline provide the string "MPC-T-H" as model_path, where T is the constant triggering frequency
+To evaluate the fixed MPC baseline provide the string "MPC-T-H" as model_path, where T is the constant triggering interval
 and H is the constant prediction horizon, e.g. for standard MPC computed every step with a horizon of 40:
 
 ```shell
