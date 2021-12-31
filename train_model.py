@@ -24,18 +24,9 @@ from gym_let_mpc.let_mpc import LetMPCEnv
 
 
 def save_model(model, type, step=None):
-    global model_folder, norm, do_not_save
+    global model_folder, norm
 
-    if type == "checkpoint":
-        path = os.path.join(model_folder, "checkpoint")
-    elif type == "best":
-        path = os.path.join(model_folder, "best")
-    elif type == "test":
-        path = os.path.join(model_folder, "test")
-    elif type == "final":
-        path = os.path.join(model_folder, "final")
-    else:
-        raise ValueError
+    path = os.path.join(model_folder, type)
 
     if step is not None:
         path = os.path.join(path, str(step))

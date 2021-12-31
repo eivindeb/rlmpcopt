@@ -21,7 +21,7 @@ def evaluate_on_test_set(env_config_path, set_path, model, measures=(), seed=Non
     if render_kw is None:
         render_kw = {}
 
-    if not hasattr(model, "test_env"):  # TODO: set 0 action noise std, set LQR weights
+    if not hasattr(model, "test_env"):
         if env_kw is None:
             env_kw = {}
         env_kw.update({"environment": {"reward": {"normalize": {"std": 1.0, "mean": 0.0}}}})
@@ -270,7 +270,7 @@ if __name__ == "__main__":
             print("WARNING: Not using normalization during evaluation")
             env = None
         loaded_model = stable_baselines.PPO2.load(args.model_path, env=env, seed=seed)
-        loaded_model.n_envs = 1  # TODO: check if this is necessary
+        loaded_model.n_envs = 1
 
         model_lqr = getattr(loaded_model.act_model, "lqr", None)
         if model_lqr is not None:  # Load learned LQR weights

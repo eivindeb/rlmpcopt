@@ -17,8 +17,8 @@
   "normalize_obs": true,
   "max_grad_norm": 0.5,
   "env_d": 10,
-  "checkpoint_interval": 5000,
-  "test_interval": 15000,
+  "checkpoint_interval": 500,
+  "test_interval": 1500,
   "policy_kwargs": {
     "layers": {
       "pi": [64, 64],

@@ -15,6 +15,8 @@
   "time_aware": false,
   "normalize_obs": true,
   "max_grad_norm": 0.5,
+  "checkpoint_interval": 5000,
+  "test_interval": 15000,
   "env_d": 1,
   "policy_kwargs": {
     "layers": {
