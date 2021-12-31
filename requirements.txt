@@ -1,5 +1,5 @@
 tensorflow==1.15.0
 tqdm
-git+https://github.com/eivindeb/stable-baselines@ea66ef4ce928adab1dbd4e87e90023dcb26f02d5#egg=stable-baselines
-git+https://github.com/eivindeb/gym-letMPC@a70c8c8798b1bee270e0ea65de19146120ba6576#egg=gym-let-mpc
-git+https://github.com/eivindeb/do-mpc@e94d8413685ad2997906ba69c90a005cd12bdc55#egg=do-mpc
+git+https://github.com/eivindeb/stable-baselines@7e06e76fe4ca6517368e2b6465613790bea021f7#egg=stable_baselines
+git+https://github.com/eivindeb/gym-letMPC@a70c8c8798b1bee270e0ea65de19146120ba6576#egg=gym_let_mpc
+git+https://github.com/eivindeb/do-mpc@e94d8413685ad2997906ba69c90a005cd12bdc55#egg=do_mpc
