@@ -1,6 +1,6 @@
 # Optimization of the Model Predictive Control Meta-Parameters Through Reinforcement Learning
 
-This repository contains the models used and code to produce these models as presented in the [accompanying paper](https://arxiv.org/abs/2011.13365). 
+This repository contains the models used and code to produce these models as presented in the [accompanying paper](https://arxiv.org/abs/2111.04146). 
 The config folder contains configuration files for both environment and for the reinforcement learning algorithm. The data
 folder contains the test-set as described and used in the paper, as well as a separate validation set used during training and
 development of the reinforcement learning models. The models used to produce the results of the paper are included in the
